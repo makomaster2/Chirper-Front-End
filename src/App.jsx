@@ -1,51 +1,95 @@
 import React, { useState } from 'react';
+import ChirpCard from './components/ChirpCard';
+import { v4 as uuidv4 } from 'uuid';
+// import ColorPicker from './components/ColorPicker';
 
 const App = () => {
+	const [color, setColor] = useState('');
 	const [username, setUsername] = useState('');
-	const [msg, setMsg] = useState('');
-	const [timeline, setTimeline] = useState([
+	const [message, setMessage] = useState('');
+	const [chirps, setChirps] = useState([
 		{
-			name: 'Gage Jones',
+			id: uuidv4(),
+			username: 'Gage Jones',
 			message: 'I made a TicTacToe game using JavaScript!',
+			color: '#ff0000',
 		},
 		{
-			name: 'Branwin DuBose',
-			message: 'Me and my Doozer friends made an app called LogBook!'
+			id: uuidv4(),
+			username: 'Branwin DuBose',
+			message: 'Me and my Doozer friends made an app called LogBook!',
+			color: '#ffff00',
 		},
 		{
-			name: 'Cody Jett',
-			message: 'Noone cares...'
-		}
+			id: uuidv4(),
+			username: 'Cody Jett',
+			message: 'Noone cares...',
+			color: '#0000ff',
+		},
 	]);
 
-	const handleUsername = e => {
-		setUsername(e.target.value);
+	const handleUsernameChange = e => setUsername(e.target.value);
+
+	const handleMessageChange = e => setMessage(e.target.value);
+
+	const handleChirpSubmit = e => {
+		e.preventDefault();
+
+		let newChirp = {
+			id: uuidv4(),
+			username: username,
+			message: message,
+			color: color,
+		};
+
+		setChirps([...chirps, newChirp]);
 	};
 
-	const handleMsg = e => {
-		setMsg(e.target.value);
+	const handleColorChange = e => {
+		console.log(e.target.value)
+		setColor(e.target.value);
 	};
-
-	const handleTimeline = () => {};
 
 	return (
-		<div>
-			<form>
+		<>
+			<form id={'chirpForm'} className='container'>
 				<input
 					value={username}
-					onChange={handleUsername}
+					onChange={handleUsernameChange}
 					placeholder={'Username'}
 				/>
 				<textarea
-					value={msg}
-					onChange={handleMsg}
+					value={message}
+					onChange={handleMessageChange}
 					placeholder={'Message'}
+					cols={'30'}
+					rows={'10'}
 				/>
-
-				<button onClick={handleTimeline}>Chirp</button>
-				<h1>{timeline.name}</h1>
+				<button className={'btn-warning'} onClick={handleChirpSubmit}>
+					Chirp
+				</button>
+				<div>
+					<input
+						type='color'
+						id='colorChoice'
+						name='colorChoice'
+						onChange={handleColorChange}
+						value={color}
+					/>
+					<label for='colorChoice'>Choose a color!</label>
+				</div>
 			</form>
-		</div>
+			<div id={'chirpCard'} className='container bg-info'>
+				{chirps.map(chirp => (
+					<ChirpCard
+						key={chirp.id}
+						username={chirp.username}
+						message={chirp.message}
+						color={chirp.color}
+					/>
+				))}
+			</div>
+		</>
 	);
 };
 
